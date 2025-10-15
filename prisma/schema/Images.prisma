@@ -1,0 +1,20 @@
+model Images {
+    id               String   @id @default(cuid())
+    url              String[]
+    altText          String?
+    title            String?
+    description      String?
+    notes            String?
+    people           String?
+    year             String?
+    decade           String?
+    zone             String?
+    previousData     String?  @map("previous_data")
+    patrimonialValue Int?     @map("patrimonial_value")
+    owner            String?
+    culturalFund     String?  @map("cultural_fund")
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @updatedAt
+
+    @@map("images")
+}
