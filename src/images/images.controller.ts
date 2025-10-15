@@ -25,7 +25,7 @@ export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Post('upload')
-  @Auth([Roles.ADMIN])
+  // @Auth([Roles.ADMIN])
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(
     @UploadedFile(
