@@ -31,10 +31,10 @@ export class ImagesService {
       );
 
       // Transformar patrimonialValue de string a número si existe
-      const patrimonialValue = metadata.patrimonialValue 
-        ? parseInt(metadata.patrimonialValue.toString(), 10) 
+      const patrimonialValue = metadata.patrimonialValue
+        ? parseInt(metadata.patrimonialValue.toString(), 10)
         : null;
-      
+
       // Crear el registro principal de la imagen
       const image = await this.prisma.image.create({
         data: {
@@ -76,9 +76,13 @@ export class ImagesService {
         }),
       );
 
+      const result = this.transformImageUrls([
+        { ...image, variants: imageVariants },
+      ])[0];
+
       return {
-        image,
-        variants: imageVariants,
+        image: result,
+        variants: result.variants,
       };
     } catch (error) {
       throw error;
@@ -143,7 +147,7 @@ export class ImagesService {
   }
 
   async getAllImages() {
-    return this.prisma.image.findMany({
+    const images = await this.prisma.image.findMany({
       include: {
         variants: true,
       },
@@ -151,15 +155,21 @@ export class ImagesService {
         createdAt: 'desc',
       },
     });
+
+    return this.transformImageUrls(images);
   }
 
   async getImageById(id: string) {
-    return this.prisma.image.findUnique({
+    const image = await this.prisma.image.findUnique({
       where: { id },
       include: {
         variants: true,
       },
     });
+
+    if (!image) return null;
+
+    return this.transformImageUrls([image])[0];
   }
 
   async deleteImage(id: string) {
@@ -190,5 +200,17 @@ export class ImagesService {
     return this.prisma.image.delete({
       where: { id },
     });
+  }
+
+  private transformImageUrls(images: any[]) {
+    const apiUrl = process.env.API_URL || 'http://localhost:3000';
+
+    return images.map((image) => ({
+      ...image,
+      variants: image.variants.map((variant) => ({
+        ...variant,
+        url: `${apiUrl}${variant.url}`,
+      })),
+    }));
   }
 }

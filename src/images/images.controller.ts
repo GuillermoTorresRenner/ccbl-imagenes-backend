@@ -34,7 +34,8 @@ export class ImagesController {
       }),
     )
     file: Express.Multer.File,
-    @Body(new ValidationPipe({ transform: true })) uploadImageDto: UploadImageDto,
+    @Body(new ValidationPipe({ transform: true }))
+    uploadImageDto: UploadImageDto,
   ) {
     try {
       const result = await this.imagesService.uploadImage(file, uploadImageDto);
