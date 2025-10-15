@@ -17,12 +17,15 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImagesService } from './images.service';
 import { UploadImageDto } from './dto';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Roles } from 'src/auth/roles.enum';
 
 @Controller('images')
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 
   @Post('upload')
+  @Auth([Roles.ADMIN])
   @UseInterceptors(FileInterceptor('image'))
   async uploadImage(
     @UploadedFile(
