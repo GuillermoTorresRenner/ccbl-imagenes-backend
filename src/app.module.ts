@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 import { UsersModule } from './users/users.module';
 import { PrismaService } from './prisma/prisma.service';
@@ -9,12 +11,13 @@ import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'public'),
+      serveRoot: '/public',
+    }),
     UsersModule,
     AuthModule,
     PrismaModule,
-    MulterModule.register({
-      dest: './uploads',
-    }),
     ImagesModule,
   ],
   controllers: [],

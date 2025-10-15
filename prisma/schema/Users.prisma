@@ -1,21 +1,21 @@
 model Users {
-    id                 String    @id @default(cuid())
-    email              String    @unique
-    password           String
-    name               String?
-    surname            String?
-    role               Role      @default(USER)
-    lastConnection     DateTime?
-    createdAt          DateTime  @default(now())
-    updatedAt          DateTime  @updatedAt
-    refreshToken       String?
+  id             String    @id @default(cuid())
+  email          String    @unique
+  password       String
+  name           String?
+  surname        String?
+  role           Role      @default(USER)
+  lastConnection DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  refreshToken   String?
 
-    @@map("users")
+  @@map("users")
 }
 
 enum Role {
-    ADMIN
-   USER
+  ADMIN
+  USER
 
-    @@map("role")
+  @@map("role")
 }

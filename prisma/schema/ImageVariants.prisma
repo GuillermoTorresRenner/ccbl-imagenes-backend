@@ -1,0 +1,13 @@
+model ImageVariant {
+    id        String  @id @default(cuid())
+    url       String
+    width     Int?
+    height    Int?
+    format    String?
+    quality   Int?
+    sizeBytes Int?
+    imageId   String
+    image     Image   @relation(fields: [imageId], references: [id], onDelete: Cascade)
+
+    @@map("image_variants")
+}
