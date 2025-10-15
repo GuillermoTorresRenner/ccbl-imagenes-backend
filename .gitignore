@@ -3,7 +3,14 @@
 /node_modules
 /build
 /db
-/public/images
+
+# Public images (keep .gitkeep files)
+/public/images/**/*.webp
+/public/images/**/*.jpg
+/public/images/**/*.jpeg
+/public/images/**/*.png
+/public/images/**/*.gif
+
 # Logs
 logs
 *.log
