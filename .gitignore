@@ -4,12 +4,25 @@
 /build
 /db
 
+# Migration directory - exclude all files except migration scripts
+/img_migrations/
+!/img_migrations/
+!/img_migrations/migrate-images.ts
+!/img_migrations/README.md
+!/img_migrations/.gitkeep
+
 # Public images (keep .gitkeep files)
 /public/images/**/*.webp
 /public/images/**/*.jpg
 /public/images/**/*.jpeg
 /public/images/**/*.png
 /public/images/**/*.gif
+/public/images/**/*.bmp
+/public/images/**/*.tiff
+/public/images/**/*.svg
+
+# Allow .gitkeep files in public folders
+!/public/images/*/.gitkeep
 
 # Logs
 logs
