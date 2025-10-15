@@ -59,194 +59,146 @@ Elimina las cookies de autenticación.
 
 Este proyecto es un boilerplate para backend con NestJS y Prisma, implementando autenticación JWT con refresh tokens, gestión de usuarios y productos, y estructura modular.
 
-## Tecnologías principales
+# 📸 Sistema de Gestión de Imágenes
 
-- NestJS
-- Prisma ORM
-- PostgreSQL
-- JWT (access y refresh tokens)
-- Docker (opcional)
+## Funcionalidades Implementadas
 
-## Estructura principal
+### 🚀 **Subida y Procesamiento de Imágenes**
 
-- `src/` - Código fuente principal
-  - `auth/` - Módulo de autenticación (login, registro, guards, decoradores)
-  - `users/` - Módulo de usuarios
-  - `products/` - Módulo de productos
-  - `prisma/` - Servicio y módulo de acceso a base de datos
-  - `utils/` - Utilidades
-- `prisma/schema/` - Schemas Prisma divididos por dominio
-- `test/` - Pruebas e2e
+El sistema permite subir imágenes y automáticamente:
 
-## Autenticación
+- Convierte las imágenes a formato **WebP** para optimización
+- Genera **3 variantes** de cada imagen:
+  - **Thumbnail**: 150x150px (recortada)
+  - **Medium**: 800px de ancho (proporcional)
+  - **Full**: Tamaño original optimizado
+- Almacena los archivos en carpetas organizadas
+- Guarda metadatos en la base de datos
 
-- **Access token:** Expira en 5 minutos
-- **Refresh token:** Expira en 24 horas, se actualiza cada vez que se usa
-- Ambos tokens se envían en cookies seguras (httpOnly, secure, sameSite strict)
-- El refresh token se almacena en la base de datos por usuario (un solo dispositivo por usuario)
+### 📁 **Estructura de Archivos**
 
-## Endpoints principales
-
-### Auth
-
-- `POST /auth/register` - Registro de usuario
-- `POST /auth/login` - Login, devuelve access y refresh tokens en cookies
-- `POST /auth/refresh` - Refresca los tokens usando el refresh token
-- `GET /auth/me` - Devuelve datos del usuario autenticado
-- `GET /auth/logout` - Elimina los tokens y cierra sesión
-
-### Users
-
-- `GET /users/:id` - Obtener usuario por id
-- `GET /users` - Listar usuarios (si implementado)
-- `POST /users` - Crear usuario (si implementado)
-
-### Products
-
-- `GET /products/:id` - Obtener producto por id
-- `GET /products` - Listar productos
-- `POST /products` - Crear producto
-- `PUT /products/:id` - Actualizar producto
-- `DELETE /products/:id` - Eliminar producto
-
-## Particularidades y buenas prácticas
-
-- Prisma schema dividido por dominio, con un archivo principal que contiene `datasource` y `generator`
-- Uso de decoradores personalizados para roles y usuario activo
-- Guards para roles y autenticación
-- Validación de DTOs con `class-validator`
-- Uso de Docker para base de datos y Adminer
-- Configuración de variables de entorno en `.env`
-- Documentación Swagger disponible en `/docs`
-
-## Instalación y uso
-
-```bash
-npm install
-npm run build
-npm run start:dev
+```
+public/images/
+├── thumbnails/    # Imágenes 150x150px
+├── medium/        # Imágenes 800px ancho
+└── full/          # Imágenes tamaño original
 ```
 
-## Migraciones Prisma
+### 🔧 **Endpoints Disponibles**
 
-```bash
-npx prisma migrate dev --name <nombre>
+#### **POST /api/images/upload**
+
+Sube una imagen con metadatos.
+
+**Parámetros:**
+
+- `image` (file): Archivo de imagen (PNG, JPEG, JPG, WebP)
+- Metadatos opcionales en el body:
+  ```json
+  {
+    "title": "Título de la imagen",
+    "altText": "Texto alternativo",
+    "description": "Descripción",
+    "notes": "Notas adicionales",
+    "people": "Personas en la imagen",
+    "year": "Año",
+    "decade": "Década",
+    "zone": "Zona geográfica",
+    "previousData": "Datos previos",
+    "patrimonialValue": 5,
+    "owner": "Propietario",
+    "culturalFund": "Fondo cultural"
+  }
+  ```
+
+**Respuesta:**
+
+```json
+{
+  "message": "Imagen subida exitosamente",
+  "data": {
+    "image": {
+      "id": "clxxxxx",
+      "title": "Título de la imagen",
+      "createdAt": "2025-10-15T17:10:54.000Z"
+      // ... otros metadatos
+    },
+    "variants": [
+      {
+        "id": "clxxxxx",
+        "url": "/public/images/thumbnails/uuid-timestamp.webp",
+        "width": 150,
+        "height": 150,
+        "format": "webp",
+        "quality": 80,
+        "sizeBytes": 12345
+      }
+      // ... medium y full
+    ]
+  }
+}
 ```
 
-## Pruebas
+#### **GET /api/images**
 
-```bash
-npm run test
-npm run test:e2e
-```
+Obtiene todas las imágenes con sus variantes.
 
-## Variables de entorno
+#### **GET /api/images/:id**
 
-Ver archivo `.env.example` para configuración recomendada.
+Obtiene una imagen específica por ID.
 
-## Seguridad
+#### **DELETE /api/images/:id**
 
-- Tokens en cookies httpOnly y secure
-- Refresh token se actualiza en cada uso
-- Acceso a endpoints protegido por guards y decoradores
+Elimina una imagen y todos sus archivos asociados.
 
-## Contacto y soporte
+### 🔒 **Validaciones**
 
-- Autor: Guillermo Torres Renner
-- Documentación NestJS: https://docs.nestjs.com
-- Documentación Prisma: https://www.prisma.io/docs
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+- **Tamaño máximo**: 10MB por archivo
+- **Tipos permitidos**: PNG, JPEG, JPG, WebP
+- **Nombres únicos**: UUID + timestamp para evitar colisiones
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+### 🛠 **Tecnologías Utilizadas**
 
-## Description
+- **Multer**: Manejo de subida de archivos
+- **Sharp**: Procesamiento y conversión de imágenes
+- **@nestjs/serve-static**: Servir archivos estáticos
+- **Prisma**: ORM para base de datos
+- **UUID**: Generación de identificadores únicos
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 📋 **Base de Datos**
 
-## Project setup
+**Modelo Image:**
 
-```bash
-$ npm install
-```
+- Metadatos principales de la imagen
+- Relación uno-a-muchos con ImageVariant
 
-## Compile and run the project
+**Modelo ImageVariant:**
 
-```bash
-# development
-$ npm run start
+- Información de cada variante (thumbnail, medium, full)
+- URL, dimensiones, tamaño, calidad, etc.
 
-# watch mode
-$ npm run start:dev
+### 🔧 **Configuración**
 
-# production mode
-$ npm run start:prod
-```
+El sistema está configurado para:
 
-## Run tests
+- Servir archivos estáticos desde `/public`
+- Procesar imágenes en memoria (no se almacenan temporalmente)
+- Eliminar archivos físicos al borrar registros de BD
+- Manejo de errores y rollback automático
 
-```bash
-# unit tests
-$ npm run test
+### 🚀 **Cómo Probar**
 
-# e2e tests
-$ npm run test:e2e
+1. Inicia el servidor: `npm run start:dev`
+2. Usa un cliente HTTP (Postman, Thunder Client, etc.)
+3. Envía POST a `http://localhost:3000/api/images/upload`
+4. Adjunta una imagen en el campo `image`
+5. Opcionalmente añade metadatos en el body
+6. Las imágenes procesadas estarán disponibles en las URLs devueltas
 
-# test coverage
-$ npm run test:cov
-```
+### 📸 **Acceso a Imágenes**
 
-## Deployment
+Las imágenes procesadas están disponibles directamente vía HTTP:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- `http://localhost:3000/public/images/thumbnails/uuid-timestamp.webp`
+- `http://localhost:3000/public/images/medium/uuid-timestamp.webp`
+- `http://localhost:3000/public/images/full/uuid-timestamp.webp`
