@@ -20,7 +20,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "delete:img": "./scripts/delete-images.sh",
-    "migrate:img": "ts-node scripts/migrate-images.ts"
+    "migrate:img": "ts-node scripts/migrate-images.ts",
+    "db:backup": "./scripts/backup-database.sh",
+    "db:restore": "./scripts/restore-database.sh"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.6",
