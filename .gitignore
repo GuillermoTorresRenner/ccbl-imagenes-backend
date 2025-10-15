@@ -3,7 +3,7 @@
 /node_modules
 /build
 /db
-
+/public
 # Public images (keep .gitkeep files)
 /public/images/**/*.webp
 /public/images/**/*.jpg
