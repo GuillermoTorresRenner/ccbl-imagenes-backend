@@ -3,13 +3,29 @@
 /node_modules
 /build
 /db
-/public
+
+# Migration images - original source files (keep .gitkeep if any)
+/img_migrations/**/*.jpg
+/img_migrations/**/*.jpeg
+/img_migrations/**/*.png
+/img_migrations/**/*.gif
+/img_migrations/**/*.webp
+/img_migrations/**/*.bmp
+/img_migrations/**/*.tiff
+/img_migrations/**/*.svg
+
 # Public images (keep .gitkeep files)
 /public/images/**/*.webp
 /public/images/**/*.jpg
 /public/images/**/*.jpeg
 /public/images/**/*.png
 /public/images/**/*.gif
+/public/images/**/*.bmp
+/public/images/**/*.tiff
+/public/images/**/*.svg
+
+# Allow .gitkeep files in public folders
+!/public/images/*/.gitkeep
 
 # Logs
 logs
