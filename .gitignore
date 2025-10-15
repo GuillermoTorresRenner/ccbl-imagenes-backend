@@ -4,15 +4,12 @@
 /build
 /db
 
-# Migration images - original source files (keep .gitkeep if any)
-/img_migrations/**/*.jpg
-/img_migrations/**/*.jpeg
-/img_migrations/**/*.png
-/img_migrations/**/*.gif
-/img_migrations/**/*.webp
-/img_migrations/**/*.bmp
-/img_migrations/**/*.tiff
-/img_migrations/**/*.svg
+# Migration directory - exclude all files except migration scripts
+/img_migrations/
+!/img_migrations/
+!/img_migrations/migrate-images.ts
+!/img_migrations/README.md
+!/img_migrations/.gitkeep
 
 # Public images (keep .gitkeep files)
 /public/images/**/*.webp
