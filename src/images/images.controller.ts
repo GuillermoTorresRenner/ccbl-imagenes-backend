@@ -13,6 +13,7 @@ import {
   HttpException,
   HttpStatus,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImagesService } from './images.service';
@@ -57,6 +58,10 @@ export class ImagesController {
   @Get()
   async getAllImages() {
     return this.imagesService.getAllImages();
+  }
+  @Get('random') 
+  async getRandomImages(@Query('count') count: number) {
+    return this.imagesService.getRandomImages(count);
   }
 
   @Get(':id')

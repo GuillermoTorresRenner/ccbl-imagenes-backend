@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ImagesModule } from './images/images.module';
+import { HeadersModule } from './headers/headers.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ImagesModule } from './images/images.module';
     AuthModule,
     PrismaModule,
     ImagesModule,
+    HeadersModule,
   ],
   controllers: [],
   providers: [PrismaService],

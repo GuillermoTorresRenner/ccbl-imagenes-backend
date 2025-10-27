@@ -172,6 +172,23 @@ export class ImagesService {
     return this.transformImageUrls([image])[0];
   }
 
+  async getRandomImages(count: number) {
+    const images = await this.prisma.image.findMany({
+      include: {
+        variants: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    // Mezclar el array y tomar los primeros 'count' elementos
+    const shuffled = images.sort(() => 0.5 - Math.random());
+    const selected = shuffled.slice(0, count);
+
+    return this.transformImageUrls(selected);
+  } 
+
   async deleteImage(id: string) {
     // Obtener la imagen con sus variantes
     const image = await this.prisma.image.findUnique({

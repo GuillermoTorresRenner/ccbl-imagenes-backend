@@ -16,6 +16,7 @@ model Image {
     updatedAt        DateTime @updatedAt
 
     variants ImageVariant[]
+    headers  Headers[]
 
     @@map("images")
 }
